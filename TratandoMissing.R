@@ -17,24 +17,24 @@ pacman:: p_load(dplyr,
                 naniar)
 
 #### Manipulação Geral  ######
-chaosdic <- read_xlsx("ChaosFinal.xlsx") # Leitura do Banco de Dados
-View(chaosdic)
+bancodic <- read_xlsx("ChaosFinal.xlsx") # Leitura do Banco de Dados
+View(bancodic)
 ### Deleting Collum ID
 
-chaosdic$`Participant ID`<- NULL 
+bancodic$`Participant ID`<- NULL 
 
 # Missing Value Percent
-sapply(chaosdic, function(x) sum(is.na(x)))
-tabelamissing <- data.frame(sapply(chaosdic, function(x) sum(is.na(x))))
+sapply(bancodic, function(x) sum(is.na(x)))
+tabelamissing <- data.frame(sapply(bancodic, function(x) sum(is.na(x))))
 write_xlsx(tabelamissing,"TabelaMissing.xlsx")
-str(chaosdic)
+str(bancodic)
 
 # MCAR Test
 
-mcar_test(chaosdic)
+mcar_test(bancodic)
 
 # Missing treatment
-imp= chaosdic
+imp= bancodic
 init = mice(data=imp, maxit = 0)
 meth = init$method
 predM = init$predictorMatrix
@@ -84,9 +84,9 @@ mode <- function(v) {
 
 
 dados_completo = data.frame(
-  Age = chaosdic$Age,
-  Gender = chaosdic$Gender,
-  School.Year = chaosdic$School.Year,
+  Age = bancodic$Age,
+  Gender = bancodic$Gender,
+  School.Year = bancodic$School.Year,
   Schooling.Father = apply(cbind(imp1cont$Schooling.Father,imp2cont$Schooling.Father,imp3cont$Schooling.Father,imp4cont$Schooling.Father,imp5cont$Schooling.Father),1,mean),
   Schooling.Mother = apply(cbind(imp1cont$Schooling.Mother,imp2cont$Schooling.Mother,imp3cont$Schooling.Mother,imp4cont$Schooling.Mother,imp5cont$Schooling.Mother),1,mean),
   Q1 = apply(cbind(imp1cat$TF_Q1,imp2cat$TF_Q1,imp3cat$TF_Q1,imp4cat$TF_Q1,imp5cat$TF_Q1),1,mode),
@@ -124,14 +124,14 @@ grafico_imput = function(real,imputado,x)
 } 
 
 
-grafico_imput(chaosdic$Schooling.Father,dados_completo$Schooling.Father,"Schooling.Father")
-grafico_imput(chaosdic$Schooling.Mother,dados_completo$Schooling.Mother,"Schooling.Maother")
-grafico_imput(chaosdic$TF_Q1,dados_completo$Q1,"Q1")
-grafico_imput(chaosdic$TF_Q2,dados_completo$Q2,"Q2")
-grafico_imput(chaosdic$TF_Q3,dados_completo$Q3,"Q3")
-grafico_imput(chaosdic$TF_Q4,dados_completo$Q4,"Q4")
+grafico_imput(bancodic$Schooling.Father,dados_completo$Schooling.Father,"Schooling.Father")
+grafico_imput(bancodic$Schooling.Mother,dados_completo$Schooling.Mother,"Schooling.Maother")
+grafico_imput(bancodic$TF_Q1,dados_completo$Q1,"Q1")
+grafico_imput(bancodic$TF_Q2,dados_completo$Q2,"Q2")
+grafico_imput(bancodic$TF_Q3,dados_completo$Q3,"Q3")
+grafico_imput(bancodic$TF_Q4,dados_completo$Q4,"Q4")
 
-write_xlsx(dados_completo,"ChaosDicProntoImput.xlsx")
+write_xlsx(dados_completo,"bancodicProntoImput.xlsx")
 
 
 
